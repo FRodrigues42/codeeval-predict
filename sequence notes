@@ -1,0 +1,64 @@
+Predict the Number
+
+0 -> 01 -> 0112 -> 01121220 -> ...
+
+ Sequence 011212201220200112 ... constructed as follows: first is 0, then 
+ repeated the following action: already written part is attributed to the right
+ with replacement 0 to 1, 1 to 2, 2 to 0. E.g. 
+
+In the next notes I don't put the module of 3 for better clarity.
+
+0112122012202001
+1234567890123456 <-- positions
+
+      
+      |-- The next position is always the current position minus a number
+      v     that is the next smaller power of 2: 15-8 = 7, 16=2^3 > 15 > 2^2=8
+16p = 8p + 1 = 4p + 1 + 1 = 2p + 1 + 1 + 1 = 1p + 1 + 1 + 1 + 1
+15p = 7p + 1 = 3p + 1 + 1 = 1p + 1 + 1 + 1
+14p = 6p + 1 = 2p + 1 + 1 = 1p + 1 + 1 + 1
+13p = 5p + 1 = 1p + 1 + 1
+12p = 4p + 1 = 2p + 1 + 1 = 1p + 1 + 1 + 1
+11p = 3p + 1 = 1p + 1 + 1
+10p = 2p + 1 = 1p + 1 + 1
+ 9p = 1p + 1
+ 8p = 4p + 1 = 2p + 1 + 1 = 1p + 1 + 1 + 1
+ 7p = 3p + 1 = 1p + 1 + 1
+ 6p = 2p + 1 = 1p + 1 + 1
+ 5p = 1p + 1
+ 4p = 2p + 1 = 1p + 1 + 1
+ 3p = 1p + 1
+ 2p = 1p + 1
+ 1p = 0
+ 
+                      v-- It's the nearest smaller power of 2: 16>8 -> 16>2^3
+value(16) = value(16-2^3) + 1 = value(16/2) + 1
+value(8) = value(8-2^2) + 1 = value(8/2) + 1
+value(4) = value(4-2^1) + 1 = value(4/2) + 1
+value(2) = value(2-2^0) + 1 = value(2/2) + 1
+value(1) = 0
+
+                    v-- It's the nearest smaller power of 2: 8>7>4 -> 2^3>7>2^2
+value(7) = value(7-2^2) + 1
+value(3) = value(3-2^1) + 1
+value(1) = 0
+
+                    v-- It's the nearest smaller power of 2: 16>9>8 -> 2^4>7>2^3
+value(9) = value(9-2^3) + 1
+value(1) = 0
+
+value(n) = value(n - 2^floor(log2(n))) + 1
+value(1) = 0
+
+function(n)
+if n = 0
+    return 1
+else
+    return function(n - 2^floor(log2(n))) + 1
+    
+With the module:
+function(n)
+    if n = 0
+        return 1
+    else
+        return (function(n - 2^floor(log2(n))) + 1) % 3
